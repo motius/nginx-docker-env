@@ -55,6 +55,12 @@ function output_vars() {
 }
 
 echo "#!/bin/ash" > /etc/profile.d/env_vars.sh
+echo "" >> /etc/profile.d/env_vars.sh
+echo "export NGINX_ENV_VARS=$NGINX_ENV_VARS" >> /etc/profile.d/env_vars.sh
 split $NGINX_ENV_VARS ","
 chunks="$buf0"
 output_vars
+chmod 0777 /etc/profile
+for i in $(ls /etc/profile.d/); do
+        chmod 0777 "/etc/profile.d/$i"
+done
