@@ -17,9 +17,9 @@ test_nginx:
   <<: *get_vars
   stage: test
   script:
-    - export CONTAINER_ID=$(docker run -p 80 -d --rm "$IMAGE_TAG")
-    - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
+    - export CONTAINER_ID=$(docker run -p 80 -d "$IMAGE_TAG")
     - docker inspect $CONTAINER_ID
+    - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - curl "$CONTAINER_IP/env"
     - docker kill $CONTAINER_ID
     - docker rmi $IMAGE_TAG
