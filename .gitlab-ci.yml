@@ -35,13 +35,12 @@ test_nginx:
     - curl -s "$CONTAINER_IP/env" -o "$tmpfile3"
     - docker kill $CONTAINER_ID
 
-    - docker rmi $IMAGE_TAG
-
     - test "{\"vars_list\":\"empty\"}" = $(cat "$tmpfile1")
     - test "{\"TEST1\":\"bla\",\"vars_list\":\"TEST1\"}" = $(cat "$tmpfile2")
     - test "{\"vars_list\":\"TEST1,TEST2\",\"TEST2\":\"bla2\",\"TEST1\":\"bla1\"}" = $(cat "$tmpfile3")
-
-    - docker rmi $IMAGE_TAG 
+  after_script:
+    - docker rmi $IMAGE_TAG
+    - rm "$tmpfile1" "$tmpfile2" "$tmpfile3"
 
 update_registry:
   <<: *get_vars
@@ -49,6 +48,7 @@ update_registry:
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.motius.de
     - docker tag $IMAGE_TAG "$CI_REGISTRY_IMAGE:stable"
+    - docker push "$CI_REGISTRY_IMAGE:stable"
     - docker rmi $IMAGE_TAG
   only:
     - master
