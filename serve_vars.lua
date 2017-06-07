@@ -15,9 +15,7 @@ end
 
 local env_vars_to_load = get_from_env("NGINX_ENV_VARS")
 local name = "NGINX_ENV_VARS"
-local response = {
-        command = "/bin/sh -c 'source /etc/profile; echo \"$" .. name .. "\"'"
-}
+local response = {}
 
 if env_vars_to_load == nil or env_vars_to_load == '' then
         response.vars_list = "empty"
