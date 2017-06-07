@@ -1,0 +1,37 @@
+stages:
+  - build
+  - test
+  - publish
+
+.basic_vars: &get_vars
+  before_script:
+   - export IMAGE_TAG="$CI_PROJECT_NAME:$CI_COMMIT_SHA" 
+
+build_container:
+  <<: *get_vars
+  stage: build
+  script:
+    - docker build -t "$IMAGE_TAG" -f Dockerfile .
+
+test_nginx:
+  <<: *get_vars
+  stage: test
+  script:
+    - export CONTAINER_ID=$(docker run -p 80 -d --rm "$IMAGE_TAG")
+    - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
+    - docker inspect $CONTAINER_ID
+    - curl "$CONTAINER_IP/env"
+    - docker kill $CONTAINER_ID
+    - docker rmi $IMAGE_TAG
+    - false
+
+update_registry:
+  <<: *get_vars
+  stage: publish
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.motius.de
+    - docker tag $IMAGE_TAG "$CI_REGISTRY_IMAGE:stable"
+    - docker rmi $IMAGE_TAG
+  only:
+    - master
+
