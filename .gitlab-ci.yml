@@ -37,9 +37,9 @@ test_nginx:
 
     - docker rmi $IMAGE_TAG
 
-    - cat "$tmpfile1" 
-    - cat "$tmpfile2"
-    - cat "$tmpfile3"
+    - test "{\"vars_list\":\"empty\"}" = $(cat "$tmpfile1")
+    - test "{\"TEST1\":\"bla\",\"vars_list\":\"TEST1\"}" = $(cat "$tmpfile2")
+    - test "{\"vars_list\":\"TEST1,TEST2\",\"TEST2\":\"bla2\",\"TEST1\":\"bla1\"}" = $(cat "$tmpfile3")
 
     - docker rmi $IMAGE_TAG 
 
