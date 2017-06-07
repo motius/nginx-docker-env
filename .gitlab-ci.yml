@@ -1,20 +1,17 @@
 stages:
-  - build
   - test
   - publish
 
-.basic_vars: &get_vars
+.basic_setup: &setup
+  variables:
+    - IMAGE_TAG="$CI_PROJECT_NAME:$CI_COMMIT_SHA"
   before_script:
-   - export IMAGE_TAG="$CI_PROJECT_NAME:$CI_COMMIT_SHA" 
-
-build_container:
-  <<: *get_vars
-  stage: build
-  script:
     - docker build -t "$IMAGE_TAG" -f Dockerfile .
+  after_script:
+    - docker rmi "$IMAGE_TAG"
 
-test_nginx:
-  <<: *get_vars
+test_container:
+  <<: *setup
   stage: test
   script:
     - export CONTAINER_ID=$(docker run -p 80 -d "$IMAGE_TAG")
@@ -38,12 +35,11 @@ test_nginx:
     - test "{\"vars_list\":\"empty\"}" = $(cat "$tmpfile1")
     - test "{\"TEST1\":\"bla\",\"vars_list\":\"TEST1\"}" = $(cat "$tmpfile2")
     - test "{\"vars_list\":\"TEST1,TEST2\",\"TEST2\":\"bla2\",\"TEST1\":\"bla1\"}" = $(cat "$tmpfile3")
-  after_script:
-    - docker rmi $IMAGE_TAG
+
     - rm "$tmpfile1" "$tmpfile2" "$tmpfile3"
 
-update_registry:
-  <<: *get_vars
+publish container:
+  <<: *setup
   stage: publish
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.motius.de
