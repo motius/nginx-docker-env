@@ -20,19 +20,19 @@ test_nginx:
     - export CONTAINER_ID=$(docker run -p 80 -d "$IMAGE_TAG")
     - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - tmpfile1=$(mktemp "/tmp/test_run_1.XXXXXX")
-    - curl "$CONTAINER_IP/env" -o "$tmpfile1"
+    - curl -s "$CONTAINER_IP/env" -o "$tmpfile1"
     - docker kill $CONTAINER_ID
 
     - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VARS="TEST1" -e TEST1="bla" "$IMAGE_TAG")
     - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - tmpfile2=$(mktemp "/tmp/test_run_2.XXXXXX")
-    - curl "$CONTAINER_IP/env" -o "$tmpfile2"
+    - curl -s "$CONTAINER_IP/env" -o "$tmpfile2"
     - docker kill $CONTAINER_ID
 
     - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VARS="TEST1,TEST2" -e TEST1="bla1" -e TEST2="bla2" "$IMAGE_TAG")
     - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - tmpfile3=$(mktemp "/tmp/test_run_3.XXXXXX")
-    - curl "$CONTAINER_IP/env" -o "$tmpfile3"
+    - curl -s "$CONTAINER_IP/env" -o "$tmpfile3"
     - docker kill $CONTAINER_ID
 
     - docker rmi $IMAGE_TAG
