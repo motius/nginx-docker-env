@@ -4,7 +4,7 @@ stages:
 
 .basic_setup: &setup
   variables:
-    - IMAGE_TAG: "$CI_PROJECT_NAME:$CI_COMMIT_SHA"
+    IMAGE_TAG: "$CI_PROJECT_NAME:$CI_COMMIT_SHA"
   before_script:
     - docker build -t "$IMAGE_TAG" -f Dockerfile .
   after_script:
