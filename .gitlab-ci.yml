@@ -23,12 +23,12 @@ test_nginx:
     - curl "$CONTAINER_IP/env" -o test_run_1
     - docker kill $CONTAINER_ID
 
-    - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VAR="TEST1" -e TEST1="bla" "$IMAGE_TAG")
+    - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VARS="TEST1" -e TEST1="bla" "$IMAGE_TAG")
     - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - curl "$CONTAINER_IP/env" -o test_run_2
     - docker kill $CONTAINER_ID
 
-    - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VAR="TEST1,TEST2" -e TEST1="bla1" -e TEST2="bla2" "$IMAGE_TAG")
+    - export CONTAINER_ID=$(docker run -p 80 -d -e NGINX_ENV_VARS="TEST1,TEST2" -e TEST1="bla1" -e TEST2="bla2" "$IMAGE_TAG")
     - export CONTAINER_IP=$(docker inspect --format="{{ .NetworkSettings.Networks.bridge.IPAddress }}" "$CONTAINER_ID")
     - curl "$CONTAINER_IP/env" -o test_run_3
     - docker kill $CONTAINER_ID
