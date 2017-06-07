@@ -23,7 +23,7 @@ test_nginx:
     - curl "$CONTAINER_IP/env"
     - docker kill $CONTAINER_ID
     - docker rmi $IMAGE_TAG
-    - false
+    - docker rmi $IMAGE_TAG 
 
 update_registry:
   <<: *get_vars
