@@ -37,6 +37,8 @@ test_container:
     - test "{\"vars_list\":\"TEST1,TEST2\",\"TEST2\":\"bla2\",\"TEST1\":\"bla1\"}" = $(cat "$tmpfile3")
 
     - rm "$tmpfile1" "$tmpfile2" "$tmpfile3"
+  tags:
+    - staging
 
 publish container:
   <<: *setup
@@ -46,6 +48,8 @@ publish container:
     - docker tag $IMAGE_TAG "$CI_REGISTRY_IMAGE:stable"
     - docker push "$CI_REGISTRY_IMAGE:stable"
     - docker rmi $IMAGE_TAG
+  tags:
+    - staging
   only:
     - master
 
